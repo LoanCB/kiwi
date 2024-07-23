@@ -1,24 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DeleteDateColumn, Entity, ManyToOne, Relation } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, ManyToOne, OneToMany, Relation } from 'typeorm';
 import { Role } from './roles.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
+import { Note } from 'src/core/entities/note.entity';
 
 @Entity()
 export class User extends BaseEntity {
   @ApiProperty({ description: 'First name of the user', example: 'John' })
-  @Column({ nullable: false })
+  @Column()
   firstName: string;
 
   @ApiProperty({ description: 'Last name of the user', example: 'Doe' })
-  @Column({ nullable: false })
+  @Column()
   lastName: string;
 
   @ApiProperty({ description: 'Email of the user', example: 'john.doe@sortcost.com' })
-  @Column({ unique: true, nullable: false })
+  @Column({ unique: true })
   email: string;
 
   @ApiProperty({ description: 'Hashed password of the user used to authenticate', example: 'azerty123' })
-  @Column({ nullable: false, select: false })
+  @Column({ select: false })
   password: string;
 
   @ApiProperty({
@@ -32,7 +33,11 @@ export class User extends BaseEntity {
   @DeleteDateColumn({ type: 'timestamp' })
   archivedAt: Date;
 
-  @ApiProperty({ type: Role })
+  @ApiProperty({ type: () => Role })
   @ManyToOne(() => Role, (role) => role.users)
   role: Relation<Role>;
+
+  @ApiProperty({ type: () => Note, isArray: true })
+  @OneToMany(() => Note, (note) => note.user)
+  notes: Relation<Note[]>;
 }
