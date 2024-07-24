@@ -31,10 +31,10 @@ async function bootstrap() {
     .enableCors();
 
   const config = new DocumentBuilder()
-    .setTitle('SortCost Service')
+    .setTitle('Kiwi Service')
     .setDescription(
       [
-        'SortCost API',
+        'Kiwi API',
         'Get an Openapi export in:',
         `- [JSON format](/${APP_ROUTE_PREFIX}-docs-json)`,
         `- [YAML format](/${APP_ROUTE_PREFIX}-docs-yaml)`,
@@ -46,13 +46,13 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(`${APP_ROUTE_PREFIX}-docs`, app, document, {
-    customSiteTitle: 'Sortcost API',
+    customSiteTitle: 'Kiwi API',
     customCss: '.topbar-wrapper img {content: url("/api/favicon.png");}',
     customfavIcon: '/api/favicon.png',
   });
 
   await app.listen(PORT);
 
-  Logger.log(`🚀 SORTCOST is running on: http://localhost:${PORT}/${APP_ROUTE_PREFIX}`);
+  Logger.log(`🚀 KIWI is running on: http://localhost:${PORT}/${APP_ROUTE_PREFIX}`);
 }
 bootstrap();
