@@ -148,7 +148,7 @@ export const sqlBuildQueryFilter = (paginationParams: PaginationParamsDto, isAnd
 /**
  * Build the search filter array to use on a QueryBuilder.where
  */
-export const sqlBuildSearchFilter = (searchValue: string, fields: string[]) => {
+export const sqlBuildSearchFilter = <Entity extends ObjectLiteral>(searchValue: string, fields: (keyof Entity)[]) => {
   const searchFilter = [];
   for (const field of fields) {
     searchFilter.push({

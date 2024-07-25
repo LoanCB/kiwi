@@ -10,7 +10,7 @@ export interface RelationParam {
 export interface EntityFilteredListOptions<Entity extends ObjectLiteral> {
   repository: Repository<Entity>;
   queryFilter: PaginationParamsDto;
-  searchFields?: string[];
+  searchFields?: (keyof Entity)[];
   isAndCondition?: boolean;
   relations?: RelationParam[];
   pkName?: string;
