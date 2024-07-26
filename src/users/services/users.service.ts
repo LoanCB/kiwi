@@ -36,13 +36,13 @@ export class UsersService {
     // Hash password
     const hashedPassword = await hash(createUserDto.password, 10);
 
-    const formatedCreateUser: FormattedCreatedUserDto = {
+    const formattedCreateUser: FormattedCreatedUserDto = {
       ...createUserDto,
       role,
       password: hashedPassword,
       confirmPassword: hashedPassword,
     };
-    return await this.usersRepository.save({ ...formatedCreateUser } as Partial<User>);
+    return await this.usersRepository.save({ ...formattedCreateUser } as Partial<User>);
   }
 
   async findAll(query: PaginationParamsDto): EntityFilteredListResults<User> {
