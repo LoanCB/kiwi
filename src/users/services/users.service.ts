@@ -63,11 +63,11 @@ export class UsersService {
     });
   }
 
-  async findOneById(id: number) {
+  async findOneById(id: number, withDeleted: boolean = true) {
     return await this.usersRepository.findOneOrFail({
       where: { id },
       relations: { role: true },
-      withDeleted: true,
+      withDeleted,
     });
   }
 

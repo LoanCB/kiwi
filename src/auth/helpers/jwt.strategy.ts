@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import configurationConfig from 'src/config/configuration.config';
 import { UsersService } from 'src/users/services/users.service';
 import { CustomHttpException } from 'src/common/helpers/custom.exception';
+import { JwtPayload } from '../types/payload.types';
 
 const configService = new ConfigService(configurationConfig());
 
@@ -18,8 +19,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
-    const user = await this.usersService.findOneByEmail(payload.username);
+  async validate(payload: JwtPayload) {
+    const user = await this.usersService.findOneById(payload.userId, false);
     if (!user) {
       throw new CustomHttpException('INVALID_TOKEN', HttpStatus.BAD_REQUEST);
     }
