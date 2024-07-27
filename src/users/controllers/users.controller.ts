@@ -11,7 +11,6 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Put,
   UseGuards,
   Request,
   Query,
@@ -55,8 +54,11 @@ export class UsersController {
   @Post()
   @Roles(RoleType.ADMINISTRATOR)
   @SwaggerUserCreate()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const createdUser = await this.usersService.create(createUserDto);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = createdUser;
+    return rest;
   }
 
   @Get()
@@ -82,14 +84,37 @@ export class UsersController {
     }
   }
 
-  @Put(':id')
+  @Patch(':id')
   @Roles(RoleType.ADMINISTRATOR)
   @SwaggerUserUpdate()
-  async update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
-    return await this.usersService.update(id, updateUserDto);
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
+    @Request() req: ExpressRequest,
+  ) {
+    const user = await this.usersService.findOneById(id);
+    const loggedUser = req.user as User;
+
+    if (!user) {
+      throw new CustomHttpException(
+        'USER_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+        this.errorCodesService.get('USER_NOT_FOUND', id),
+      );
+    }
+
+    if (loggedUser.role.name !== RoleType.ADMINISTRATOR) {
+      if (user.id !== loggedUser.id) {
+        throw new CustomHttpException('FORBIDDEN_EDIT_USER', HttpStatus.FORBIDDEN);
+      } else {
+        delete updateUserDto.role;
+      }
+    }
+
+    return await this.usersService.update(user, updateUserDto);
   }
 
-  @Patch(':id')
+  @Patch(':id/archive')
   @Roles(RoleType.ADMINISTRATOR)
   @HttpCode(204)
   @SwaggerUserPatch()
@@ -98,10 +123,11 @@ export class UsersController {
     @Body() patchUserDto: PatchUserDto,
     @Request() req: ExpressRequest,
   ) {
-    const user = req.user as User;
-    if (user && user.id === id) {
+    const loggedUser = req.user as User;
+    if (loggedUser.id === id) {
       throw new CustomHttpException('ARCHIVE_HIMSELF', HttpStatus.BAD_REQUEST);
     }
+
     await this.usersService.softDelete(id, patchUserDto);
   }
 }

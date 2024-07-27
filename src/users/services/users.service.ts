@@ -71,16 +71,7 @@ export class UsersService {
     });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.findOneById(id);
-    if (!user) {
-      throw new CustomHttpException(
-        'USER_NOT_FOUND',
-        HttpStatus.NOT_FOUND,
-        this.errorCodesService.get('USER_NOT_FOUND', id),
-      );
-    }
-
+  async update(user: User, updateUserDto: UpdateUserDto) {
     // Verify user email is unique
     if (updateUserDto.email && (await this.emailAlreadyExistOnOtherUser(user, updateUserDto.email))) {
       throw new CustomHttpException('USER_EMAIL_ALREADY_EXISTS', HttpStatus.BAD_REQUEST);
@@ -95,7 +86,9 @@ export class UsersService {
     }
 
     // hash password
-    updateUserDto.password = await hash(updateUserDto.password, 10);
+    if (updateUserDto.password) {
+      updateUserDto.password = await hash(updateUserDto.password, 10);
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { ['role']: _, ...dto } = updateUserDto;
