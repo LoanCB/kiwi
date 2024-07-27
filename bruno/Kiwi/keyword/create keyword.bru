@@ -1,0 +1,17 @@
+meta {
+  name: create keyword
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/keywords
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "search"
+  }
+}
