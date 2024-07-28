@@ -1,5 +1,5 @@
 import { EditKeywordDto } from './../dto/edit-keyword.dto';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Keyword } from '../entities/keyword.entity';
 import { Repository } from 'typeorm';
@@ -8,6 +8,7 @@ import { PaginationParamsDto } from 'src/common/dto/pagination-params.dto';
 import { EntityFilteredListResults } from 'src/common/types/filter-repository.types';
 import { getEntityFilteredList } from 'src/common/helpers/filter-repository.helper';
 import { CreateKeywordDto } from '../dto/create-keyword.dto';
+import { CustomHttpException } from 'src/common/helpers/custom.exception';
 
 @Injectable()
 export class KeywordService {
@@ -36,5 +37,16 @@ export class KeywordService {
   async editOne(keyword: Keyword, editKeywordDto: EditKeywordDto) {
     keyword.title = editKeywordDto.title;
     return await this.keywordRepository.save(keyword);
+  }
+
+  async deleteOne(id: number) {
+    const result = await this.keywordRepository.delete(id);
+    if (result.affected === 0) {
+      throw new CustomHttpException(
+        'KEYWORD_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+        this.errorCodesService.get('USER_NOT_FOUND', id),
+      );
+    }
   }
 }

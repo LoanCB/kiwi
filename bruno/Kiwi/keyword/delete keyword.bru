@@ -1,0 +1,15 @@
+meta {
+  name: delete keyword
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/keywords/{{id}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  id: 2
+}

@@ -1,4 +1,16 @@
-import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CommonSwaggerResponse } from 'src/common/helpers/common-swagger-config.helper';
@@ -72,5 +84,11 @@ export class KeywordController {
     }
 
     return await this.keywordService.editOne(keyword, editKeywordDto);
+  }
+
+  @Delete(':id')
+  @Roles(RoleType.MANAGER)
+  async deleteOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.keywordService.deleteOne(id);
   }
 }
