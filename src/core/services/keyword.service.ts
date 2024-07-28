@@ -27,4 +27,8 @@ export class KeywordService {
     });
     return [keywords, keywords.length, totalResults];
   }
+
+  async findOneById(id: number) {
+    return await this.keywordRepository.findOneOrFail({ where: { id } });
+  }
 }

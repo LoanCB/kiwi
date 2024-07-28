@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CommonSwaggerResponse } from 'src/common/helpers/common-swagger-config.helper';
@@ -11,6 +11,7 @@ import { PaginatedList } from 'src/common/types/pagination-params.types';
 import { Keyword } from '../entities/keyword.entity';
 import { KeywordListDto } from '../dto/keyword-list.dto';
 import { CreateKeywordDto } from '../dto/create-keyword.dto';
+import { CustomHttpException } from 'src/common/helpers/custom.exception';
 
 @Controller({
   path: 'keywords',
@@ -38,5 +39,19 @@ export class KeywordController {
   async findAll(@Query() query: KeywordListDto): Promise<PaginatedList<Keyword>> {
     const [keywords, currentResults, totalResults] = await this.keywordService.findAll(query);
     return { ...query, totalResults, currentResults, results: keywords };
+  }
+
+  @Get(':id')
+  @Roles(RoleType.READ_ONLY)
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.keywordService.findOneById(id);
+    } catch {
+      throw new CustomHttpException(
+        'KEYWORD_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+        this.errorCodesService.get('USER_NOT_FOUND', id),
+      );
+    }
   }
 }
