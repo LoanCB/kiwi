@@ -1,3 +1,4 @@
+import { EditKeywordDto } from './../dto/edit-keyword.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Keyword } from '../entities/keyword.entity';
@@ -29,6 +30,11 @@ export class KeywordService {
   }
 
   async findOneById(id: number) {
-    return await this.keywordRepository.findOneOrFail({ where: { id } });
+    return await this.keywordRepository.findOne({ where: { id } });
+  }
+
+  async editOne(keyword: Keyword, editKeywordDto: EditKeywordDto) {
+    keyword.title = editKeywordDto.title;
+    return await this.keywordRepository.save(keyword);
   }
 }

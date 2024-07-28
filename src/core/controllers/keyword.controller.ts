@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CommonSwaggerResponse } from 'src/common/helpers/common-swagger-config.helper';
@@ -12,6 +12,7 @@ import { Keyword } from '../entities/keyword.entity';
 import { KeywordListDto } from '../dto/keyword-list.dto';
 import { CreateKeywordDto } from '../dto/create-keyword.dto';
 import { CustomHttpException } from 'src/common/helpers/custom.exception';
+import { EditKeywordDto } from '../dto/edit-keyword.dto';
 
 @Controller({
   path: 'keywords',
@@ -44,14 +45,32 @@ export class KeywordController {
   @Get(':id')
   @Roles(RoleType.READ_ONLY)
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    try {
-      return await this.keywordService.findOneById(id);
-    } catch {
+    const keyword = await this.keywordService.findOneById(id);
+
+    if (!keyword) {
       throw new CustomHttpException(
         'KEYWORD_NOT_FOUND',
         HttpStatus.NOT_FOUND,
         this.errorCodesService.get('USER_NOT_FOUND', id),
       );
     }
+
+    return keyword;
+  }
+
+  @Patch(':id')
+  @Roles(RoleType.MANAGER)
+  async editOne(@Param('id', ParseIntPipe) id: number, @Body() editKeywordDto: EditKeywordDto) {
+    const keyword = await this.keywordService.findOneById(id);
+
+    if (!keyword) {
+      throw new CustomHttpException(
+        'KEYWORD_NOT_FOUND',
+        HttpStatus.NOT_FOUND,
+        this.errorCodesService.get('USER_NOT_FOUND', id),
+      );
+    }
+
+    return await this.keywordService.editOne(keyword, editKeywordDto);
   }
 }

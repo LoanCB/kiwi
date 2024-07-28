@@ -1,0 +1,21 @@
+meta {
+  name: edit keyword
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{base_url}}/keywords/{{id}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "search"
+  }
+}
+
+vars:pre-request {
+  id: 1
+}

@@ -7,7 +7,7 @@ import { Note } from './note.entity';
 @Entity()
 export class Keyword extends BaseEntity {
   @ApiProperty({ description: 'Title of the keyword', example: 'fériés' })
-  @Column()
+  @Column({ unique: true })
   title: string;
 
   @ApiProperty({ type: () => Category })
