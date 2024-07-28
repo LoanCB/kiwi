@@ -29,7 +29,7 @@ export class KeywordController {
   ) {}
 
   @Post()
-  @Roles(RoleType.READ_ONLY)
+  @Roles(RoleType.MANAGER)
   async create(@Body() createKeywordDto: CreateKeywordDto) {
     return this.keywordService.create(createKeywordDto);
   }
