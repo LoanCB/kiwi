@@ -7,11 +7,13 @@ import { Category } from './entities/category.entity';
 import { Keyword } from './entities/keyword.entity';
 import { KeywordService } from './services/keyword.service';
 import { KeywordController } from './controllers/keyword.controller';
+import { CategoryController } from './controllers/category.controller';
+import { CategoryService } from './services/category.service';
 
 @Module({
   imports: [CommonModule, UsersModule, TypeOrmModule.forFeature([Note, Category, Keyword])],
-  controllers: [KeywordController],
-  providers: [KeywordService],
+  controllers: [KeywordController, CategoryController],
+  providers: [KeywordService, CategoryService],
   exports: [],
 })
 export class CoreModule {}

@@ -7,7 +7,7 @@ import { Note } from './note.entity';
 @Entity()
 export class Category extends BaseEntity {
   @ApiProperty({ description: 'Title of the category', example: 'Pagination' })
-  @Column()
+  @Column({ unique: true })
   title: string;
 
   @ApiPropertyOptional({
