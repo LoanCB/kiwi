@@ -1,4 +1,3 @@
-import { EditKeywordDto } from './../dto/edit-keyword.dto';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Keyword } from '../entities/keyword.entity';
@@ -7,8 +6,9 @@ import { ErrorCodesService } from 'src/common/services/error-codes.service';
 import { PaginationParamsDto } from 'src/common/dto/pagination-params.dto';
 import { EntityFilteredListResults } from 'src/common/types/filter-repository.types';
 import { getEntityFilteredList } from 'src/common/helpers/filter-repository.helper';
-import { CreateKeywordDto } from '../dto/create-keyword.dto';
 import { CustomHttpException } from 'src/common/helpers/custom.exception';
+import { CreateKeywordDto } from '../dto/keyword/create-keyword.dto';
+import { EditKeywordDto } from '../dto/keyword/edit-keyword.dto';
 
 @Injectable()
 export class KeywordService {
@@ -39,7 +39,7 @@ export class KeywordService {
     return await this.keywordRepository.save(keyword);
   }
 
-  async deleteOne(id: number) {
+  async deleteOneById(id: number) {
     const result = await this.keywordRepository.delete(id);
     if (result.affected === 0) {
       throw new CustomHttpException(

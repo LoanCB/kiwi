@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -21,10 +22,10 @@ import { Roles } from 'src/users/decorators/roles.decorator';
 import { RoleType } from 'src/users/types/role-type';
 import { PaginatedList } from 'src/common/types/pagination-params.types';
 import { Keyword } from '../entities/keyword.entity';
-import { KeywordListDto } from '../dto/keyword-list.dto';
-import { CreateKeywordDto } from '../dto/create-keyword.dto';
 import { CustomHttpException } from 'src/common/helpers/custom.exception';
-import { EditKeywordDto } from '../dto/edit-keyword.dto';
+import { CreateKeywordDto } from '../dto/keyword/create-keyword.dto';
+import { KeywordListDto } from '../dto/keyword/keyword-list.dto';
+import { EditKeywordDto } from '../dto/keyword/edit-keyword.dto';
 
 @Controller({
   path: 'keywords',
@@ -88,7 +89,8 @@ export class KeywordController {
 
   @Delete(':id')
   @Roles(RoleType.MANAGER)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async deleteOne(@Param('id', ParseIntPipe) id: number) {
-    return await this.keywordService.deleteOne(id);
+    return await this.keywordService.deleteOneById(id);
   }
 }
