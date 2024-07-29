@@ -1,0 +1,15 @@
+meta {
+  name: delete category
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/categories/{{id}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  id: 6
+}
