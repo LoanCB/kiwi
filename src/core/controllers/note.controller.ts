@@ -47,8 +47,9 @@ export class NoteController {
 
   @Post()
   @Roles(RoleType.READ_ONLY)
-  async create(@Body() createNoteDto: CreateNoteDto) {
-    return this.noteService.create(createNoteDto);
+  async create(@Body() createNoteDto: CreateNoteDto, @Request() req: ExpressRequest) {
+    const loggedUser = req.user as User;
+    return this.noteService.create(createNoteDto, loggedUser);
   }
 
   @Get()

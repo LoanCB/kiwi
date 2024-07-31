@@ -8,6 +8,7 @@ import { CreateNoteDto } from '../dto/note/create-note.dto';
 import { PaginationParamsDto } from 'src/common/dto/pagination-params.dto';
 import { EntityFilteredListResults } from 'src/common/types/filter-repository.types';
 import { getEntityFilteredList } from 'src/common/helpers/filter-repository.helper';
+import { User } from 'src/users/entities/users.entity';
 
 @Injectable()
 export class NoteService {
@@ -16,8 +17,8 @@ export class NoteService {
 
   constructor(private readonly errorCodesService: ErrorCodesService) {}
 
-  async create(createNoteDto: CreateNoteDto) {
-    return await this.noteRepository.save(createNoteDto);
+  async create(createNoteDto: CreateNoteDto, user: User) {
+    return await this.noteRepository.save({ ...createNoteDto, user });
   }
 
   async findAll(query: PaginationParamsDto): EntityFilteredListResults<Note> {
@@ -27,14 +28,14 @@ export class NoteService {
       searchFields: ['c.name', 'title', 'k.title'],
       relations: [
         { relation: 'category', alias: 'c' },
-        { relation: 'keyword', alias: 'k' },
+        { relation: 'keywords', alias: 'k' },
       ],
     });
     return [notes, notes.length, totalResults];
   }
 
   async findOneById(id: number) {
-    return await this.noteRepository.findOne({ where: { id } });
+    return await this.noteRepository.findOne({ where: { id }, relations: { user: true } });
   }
 
   async editOne(note: Note, editNoteDto: EditNoteDto) {
