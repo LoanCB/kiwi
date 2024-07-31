@@ -45,7 +45,7 @@ export class InitializeDatabase1722414191299 implements MigrationInterface {
                 \`title\` varchar(255) NOT NULL,
                 \`content\` text NOT NULL,
                 \`code\` text NULL,
-                \`langages\` text NOT NULL,
+                \`languages\` text NOT NULL,
                 \`categoryId\` int NULL,
                 \`userId\` int NULL,
                 PRIMARY KEY (\`id\`)

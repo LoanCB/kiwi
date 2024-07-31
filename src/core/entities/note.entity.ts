@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, Relation } from 'typeorm';
-import { ProgrammingLangage } from '../types/languages.types';
+import { ProgrammingLanguage } from '../types/languages.types';
 import { Keyword } from './keyword.entity';
 import { Category } from './category.entity';
 import { User } from 'src/users/entities/users.entity';
@@ -21,12 +21,12 @@ export class Note extends SoftDeleteEntity {
   code?: string;
 
   @ApiProperty({
-    enum: ProgrammingLangage,
+    enum: ProgrammingLanguage,
     description: 'Langage(s) concerned by the note',
-    example: [ProgrammingLangage.TYPESCRIPT, ProgrammingLangage.JAVASCRIPT],
+    example: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
   })
   @Column({ type: 'simple-array' })
-  langages: ProgrammingLangage[];
+  languages: ProgrammingLanguage[];
 
   @ApiProperty({ type: () => Keyword, isArray: true })
   @ManyToMany(() => Keyword, (keyword) => keyword.notes)
