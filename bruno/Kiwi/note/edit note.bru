@@ -1,0 +1,21 @@
+meta {
+  name: edit note
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{base_url}}/notes/{{id}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "test"
+  }
+}
+
+vars:pre-request {
+  id: 2
+}
