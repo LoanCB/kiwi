@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Category } from '../entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ErrorCodesService } from 'src/common/services/error-codes.service';
 import { CreateCategoryDto } from '../dto/category/create-category.dto';
 import { PaginationParamsDto } from 'src/common/dto/pagination-params.dto';
@@ -28,6 +28,10 @@ export class CategoryService {
       searchFields: ['title'],
     });
     return [category, category.length, totalResults];
+  }
+
+  async findByIds(ids: number[]) {
+    return await this.categoryRepository.findBy({ id: In(ids) });
   }
 
   async findOneById(id: number) {

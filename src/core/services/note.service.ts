@@ -3,7 +3,7 @@ import { ErrorCodesService } from 'src/common/services/error-codes.service';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Note } from '../entities/note.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateNoteDto } from '../dto/note/create-note.dto';
 import { PaginationParamsDto } from 'src/common/dto/pagination-params.dto';
 import { EntityFilteredListResults } from 'src/common/types/filter-repository.types';
@@ -32,6 +32,10 @@ export class NoteService {
       ],
     });
     return [notes, notes.length, totalResults];
+  }
+
+  async findByIds(ids: number[]) {
+    return await this.noteRepository.findBy({ id: In(ids) });
   }
 
   async findOneById(id: number) {
