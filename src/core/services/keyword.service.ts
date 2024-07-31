@@ -9,31 +9,33 @@ import { getEntityFilteredList } from 'src/common/helpers/filter-repository.help
 import { CustomHttpException } from 'src/common/helpers/custom.exception';
 import { CreateKeywordDto } from '../dto/keyword/create-keyword.dto';
 import { EditKeywordDto } from '../dto/keyword/edit-keyword.dto';
-import { CategoryService } from './category.service';
-import { NoteService } from './note.service';
+import { Category } from '../entities/category.entity';
+import { Note } from '../entities/note.entity';
 
 @Injectable()
 export class KeywordService {
   @InjectRepository(Keyword)
   keywordRepository: Repository<Keyword>;
 
-  constructor(
-    private errorCodesService: ErrorCodesService,
-    private readonly categoryService: CategoryService,
-    private readonly noteService: NoteService,
-  ) {}
+  @InjectRepository(Keyword)
+  categoryRepository: Repository<Category>;
+
+  @InjectRepository(Keyword)
+  noteRepository: Repository<Note>;
+
+  constructor(private errorCodesService: ErrorCodesService) {}
 
   async create(createKeywordDto: CreateKeywordDto) {
     const keyword = new Keyword();
     keyword.title = createKeywordDto.title;
 
     if (createKeywordDto.categoryIds) {
-      const categories = await this.categoryService.findByIds(createKeywordDto.categoryIds);
+      const categories = await this.categoryRepository.findBy({ id: In(createKeywordDto.categoryIds) });
       keyword.categories = categories;
     }
 
     if (createKeywordDto.noteIds) {
-      const notes = await this.noteService.findByIds(createKeywordDto.noteIds);
+      const notes = await this.noteRepository.findBy({ id: In(createKeywordDto.noteIds) });
       keyword.notes = notes;
     }
 
@@ -61,12 +63,12 @@ export class KeywordService {
     keyword.title = editKeywordDto.title ?? keyword.title;
 
     if (editKeywordDto.categoryIds) {
-      const categories = await this.categoryService.findByIds(editKeywordDto.categoryIds);
+      const categories = await this.categoryRepository.findBy({ id: In(editKeywordDto.categoryIds) });
       keyword.categories = categories;
     }
 
     if (editKeywordDto.noteIds) {
-      const notes = await this.noteService.findByIds(editKeywordDto.noteIds);
+      const notes = await this.noteRepository.findBy({ id: In(editKeywordDto.noteIds) });
       keyword.notes = notes;
     }
 

@@ -4,7 +4,7 @@ import { ProgrammingLanguage } from 'src/core/types/languages.types';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 
-export class EditNoteDto extends PickType(CreateNoteDto, ['code']) {
+export class EditNoteDto extends PickType(CreateNoteDto, ['code', 'categoryIds', 'keywordIds']) {
   @ApiProperty({ example: 'Calcul du jour de pâques' })
   @IsString({ message: 'Title must be a string' })
   @MaxLength(255, { message: 'Title must contains less than 255 characters' })

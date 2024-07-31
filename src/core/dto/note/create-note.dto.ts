@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsArray, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { ProgrammingLanguage } from 'src/core/types/languages.types';
 
 export class CreateNoteDto {
@@ -29,4 +29,15 @@ export class CreateNoteDto {
     message: `Languages must be an array containing one or more of the following values : ${Object.values(ProgrammingLanguage).join(' | ')}`,
   })
   languages: ProgrammingLanguage[];
+
+  @ApiPropertyOptional({ example: 1 })
+  @IsInt({ message: 'CategoryIds must be an integer' })
+  @IsOptional()
+  categoryId?: number;
+
+  @ApiPropertyOptional({ example: [1, 2, 3] })
+  @IsArray({ message: 'KeywordIds must be an array' })
+  @IsInt({ each: true, message: 'KeywordIds must be an array of integers' })
+  @IsOptional()
+  keywordIds?: number[];
 }

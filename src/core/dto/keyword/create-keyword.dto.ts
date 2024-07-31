@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateKeywordDto {
@@ -7,13 +7,13 @@ export class CreateKeywordDto {
   @IsNotEmpty({ message: 'Title is required' })
   title: string;
 
-  @ApiProperty({ example: [1, 2, 3] })
+  @ApiPropertyOptional({ example: [1, 2, 3] })
   @IsArray({ message: 'CategoryIds must be an array' })
   @IsInt({ each: true, message: 'CategoryIds must be an array of integers' })
   @IsOptional()
   categoryIds?: number[];
 
-  @ApiProperty({ example: [1, 2, 3] })
+  @ApiPropertyOptional({ example: [1, 2, 3] })
   @IsArray({ message: 'NoteIds must be an array' })
   @IsInt({ each: true, message: 'NoteIds must be an array of integers' })
   @IsOptional()

@@ -9,15 +9,40 @@ import { EntityFilteredListResults } from 'src/common/types/filter-repository.ty
 import { getEntityFilteredList } from 'src/common/helpers/filter-repository.helper';
 import { EditCategoryDto } from '../dto/category/edit-category.dto';
 import { CustomHttpException } from 'src/common/helpers/custom.exception';
+import { Keyword } from '../entities/keyword.entity';
+import { Note } from '../entities/note.entity';
 
 @Injectable()
 export class CategoryService {
   @InjectRepository(Category)
   categoryRepository: Repository<Category>;
 
+  @InjectRepository(Keyword)
+  keywordRepository: Repository<Keyword>;
+
+  @InjectRepository(Keyword)
+  noteRepository: Repository<Note>;
+
   constructor(private errorCodesService: ErrorCodesService) {}
 
   async create(createCategoryDto: CreateCategoryDto) {
+    const category = new Category();
+    category.title = createCategoryDto.title;
+
+    if (createCategoryDto.description) {
+      category.description = createCategoryDto.description;
+    }
+
+    if (createCategoryDto.keywordIds) {
+      const keywords = await this.keywordRepository.findBy({ id: In(createCategoryDto.keywordIds) });
+      category.keywords = keywords;
+    }
+
+    if (createCategoryDto.noteIds) {
+      const notes = await this.noteRepository.findBy({ id: In(createCategoryDto.noteIds) });
+      category.notes = notes;
+    }
+
     return await this.categoryRepository.save(createCategoryDto);
   }
 
@@ -39,6 +64,18 @@ export class CategoryService {
   }
 
   async editOne(category: Category, editKeywordDto: EditCategoryDto) {
+    if (editKeywordDto.keywordIds) {
+      const keywords = await this.keywordRepository.findBy({ id: In(editKeywordDto.keywordIds) });
+      category.keywords = keywords;
+      delete editKeywordDto.keywordIds;
+    }
+
+    if (editKeywordDto.noteIds) {
+      const notes = await this.noteRepository.findBy({ id: In(editKeywordDto.noteIds) });
+      category.notes = notes;
+      delete editKeywordDto.noteIds;
+    }
+
     Object.assign(category, editKeywordDto);
     return await this.categoryRepository.save(category);
   }
