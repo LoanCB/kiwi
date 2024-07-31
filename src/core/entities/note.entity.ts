@@ -17,8 +17,8 @@ export class Note extends SoftDeleteEntity {
   content: string;
 
   @ApiPropertyOptional({ description: 'Content of the note', example: 'console.log("abricot")' })
-  @Column({ type: 'text', nullable: true })
-  code?: string;
+  @Column({ type: 'simple-array', nullable: true })
+  code?: string[];
 
   @ApiProperty({
     enum: ProgrammingLanguage,

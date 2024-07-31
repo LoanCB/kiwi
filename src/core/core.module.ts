@@ -9,11 +9,13 @@ import { KeywordService } from './services/keyword.service';
 import { KeywordController } from './controllers/keyword.controller';
 import { CategoryController } from './controllers/category.controller';
 import { CategoryService } from './services/category.service';
+import { NoteController } from './controllers/note.controller';
+import { NoteService } from './services/note.service';
 
 @Module({
   imports: [CommonModule, UsersModule, TypeOrmModule.forFeature([Note, Category, Keyword])],
-  controllers: [KeywordController, CategoryController],
-  providers: [KeywordService, CategoryService],
+  controllers: [KeywordController, CategoryController, NoteController],
+  providers: [KeywordService, CategoryService, NoteService],
   exports: [],
 })
 export class CoreModule {}
