@@ -1,13 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { BaseEntity } from 'src/common/entities/base.entity';
-import { Column, DeleteDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, Relation } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, Relation } from 'typeorm';
 import { ProgrammingLangage } from '../types/languages.types';
 import { Keyword } from './keyword.entity';
 import { Category } from './category.entity';
 import { User } from 'src/users/entities/users.entity';
+import { SoftDeleteEntity } from 'src/common/entities/soft-delete.entity';
 
 @Entity()
-export class Note extends BaseEntity {
+export class Note extends SoftDeleteEntity {
   @ApiProperty({ description: 'Title of the note', example: 'Calcul des date des jours fériés' })
   @Column()
   title: string;
@@ -27,10 +27,6 @@ export class Note extends BaseEntity {
   })
   @Column({ type: 'simple-array' })
   langages: ProgrammingLangage[];
-
-  @ApiProperty({ description: 'Date of which the account was archived', example: '2023-02-09T12:54:21.846Z' })
-  @DeleteDateColumn({ type: 'timestamp' })
-  archivedAt: Date;
 
   @ApiProperty({ type: () => Keyword, isArray: true })
   @ManyToMany(() => Keyword, (keyword) => keyword.notes)

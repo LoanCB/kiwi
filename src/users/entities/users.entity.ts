@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DeleteDateColumn, Entity, ManyToOne, OneToMany, Relation } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, Relation } from 'typeorm';
 import { Role } from './roles.entity';
-import { BaseEntity } from 'src/common/entities/base.entity';
 import { Note } from 'src/core/entities/note.entity';
+import { SoftDeleteEntity } from 'src/common/entities/soft-delete.entity';
 
 @Entity()
-export class User extends BaseEntity {
+export class User extends SoftDeleteEntity {
   @ApiProperty({ description: 'First name of the user', example: 'John' })
   @Column()
   firstName: string;
@@ -28,10 +28,6 @@ export class User extends BaseEntity {
   })
   @Column({ default: true })
   isActive: boolean;
-
-  @ApiProperty({ description: 'Date of which the account was archived', example: '2023-02-09T12:54:21.846Z' })
-  @DeleteDateColumn({ type: 'timestamp' })
-  archivedAt: Date;
 
   @ApiProperty({ type: () => Role })
   @ManyToOne(() => Role, (role) => role.users)
