@@ -58,7 +58,18 @@ export class KeywordService {
   }
 
   async editOne(keyword: Keyword, editKeywordDto: EditKeywordDto) {
-    keyword.title = editKeywordDto.title;
+    keyword.title = editKeywordDto.title ?? keyword.title;
+
+    if (editKeywordDto.categoryIds) {
+      const categories = await this.categoryService.findByIds(editKeywordDto.categoryIds);
+      keyword.categories = categories;
+    }
+
+    if (editKeywordDto.noteIds) {
+      const notes = await this.noteService.findByIds(editKeywordDto.noteIds);
+      keyword.notes = notes;
+    }
+
     return await this.keywordRepository.save(keyword);
   }
 
